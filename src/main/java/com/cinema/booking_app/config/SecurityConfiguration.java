@@ -1,12 +1,21 @@
 package com.cinema.booking_app.config;
 
+import com.cinema.booking_app.config.filter.AuthenticationFilter;
+import com.cinema.booking_app.config.properties.RsaKeyProperties;
 import com.cinema.booking_app.security.SecurityProblemSupport;
+import com.cinema.booking_app.security.jwt.JWTConfigure;
+import com.cinema.booking_app.security.jwt.TokenProvider;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,15 +24,21 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -33,32 +48,40 @@ import java.util.Collections;
 public class SecurityConfiguration {
 
     final SecurityProblemSupport problemSupport;
+    final RsaKeyProperties rsaKeyProperties;
 
-    private static final String[] API_PUBLIC = {
+    public static final List<String> API_PUBLIC = List.of(
             "/sign-in",
             "/sign-up"
-    };
+    );
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, MvcRequestMatcher.Builder mvc) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, MvcRequestMatcher.Builder mvc, TokenProvider tokenProvider) throws Exception {
         httpSecurity.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .securityMatcher(new AndRequestMatcher(mvc.pattern("/api/**")))
                 .authorizeHttpRequests(
                         authorizeRequest ->
                                 authorizeRequest
-                                        .requestMatchers(HttpMethod.POST, API_PUBLIC)
-                                        .permitAll()
+                                        .requestMatchers(apiPublic(mvc)).permitAll()
                                         .anyRequest()
                                         .authenticated()
                 )
                 .exceptionHandling(exceptions ->
                         exceptions.accessDeniedHandler(problemSupport)
                                 .authenticationEntryPoint(problemSupport))
+                .with(new JWTConfigure(tokenProvider), Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)
         ;
         return httpSecurity.build();
+    }
+
+    public RequestMatcher[] apiPublic(MvcRequestMatcher.Builder mvc) {
+        return API_PUBLIC.stream()
+                .map(mvc::pattern)
+                .toArray(RequestMatcher[]::new);
     }
 
     @Bean
@@ -86,4 +109,17 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    JwtDecoder jwtDecoder() {
+        return NimbusJwtDecoder.withPublicKey(rsaKeyProperties.rsaPublicKey()).build();
+    }
+
+    @Bean
+    JwtEncoder jwtEncoder() {
+        JWK jwk = new RSAKey.Builder(rsaKeyProperties.rsaPublicKey())
+                .privateKey(rsaKeyProperties.rsaPrivateKey())
+                .build();
+        final JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
+        return new NimbusJwtEncoder(jwkSource);
+    }
 }

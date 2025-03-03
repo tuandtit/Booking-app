@@ -1,17 +1,19 @@
 package com.cinema.booking_app;
 
+import com.cinema.booking_app.config.properties.RsaKeyProperties;
 import io.micrometer.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.env.Environment;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @SpringBootApplication()
-//@EnableConfigurationProperties({MinioProperties.class})
+@EnableConfigurationProperties({RsaKeyProperties.class})
 public class BookingApplication {
 
 	private static final Logger log = LoggerFactory.getLogger(BookingApplication.class);
