@@ -1,6 +1,9 @@
 package com.cinema.booking_app.service.impl;
 
+import com.cinema.booking_app.entity.RoleEntity;
+import com.cinema.booking_app.entity.enums.ERole;
 import com.cinema.booking_app.repository.AccountRepository;
+import com.cinema.booking_app.repository.RoleRepository;
 import com.cinema.booking_app.security.jwt.TokenProvider;
 import com.cinema.booking_app.service.AuthenticationService;
 import com.cinema.booking_app.service.dto.AccountDto;
@@ -29,6 +32,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     //Repository
     AccountRepository accountRepository;
+    RoleRepository roleRepository;
 
     //Mapper
     AccountMapper accountMapper;
@@ -36,7 +40,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AccountDto signUp(SignUpRequest request) {
         final var entity = accountMapper.toEntity(request);
+        RoleEntity role = roleRepository.findByName(ERole.USER);
         entity.setPasswordHash(passwordEncoder.encode(request.password()));
+        entity.addRole(role);
         return accountMapper.toDto(accountRepository.save(entity));
     }
 
@@ -53,6 +59,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         final var dto = new AccountDto();
         dto.setUsername(request.username());
         dto.setToken(tokenProvider.createToken(authentication));
-        return null;
+        dto.setTokenType("Bearer");
+        return dto;
     }
 }
