@@ -1,6 +1,6 @@
 package com.cinema.booking_app.security.jwt;
 
-import com.cinema.booking_app.config.filter.AuthenticationFilter;
+import com.cinema.booking_app.config.filter.JwtAccessTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +19,6 @@ public class JWTConfigure extends SecurityConfigurerAdapter<DefaultSecurityFilte
 
     @Override
     public void configure(final HttpSecurity http) throws Exception {
-        http.addFilterBefore(new AuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAccessTokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
 }

@@ -1,8 +1,11 @@
 package com.cinema.booking_app.security.jwt;
 
 import com.cinema.booking_app.config.properties.RsaKeyProperties;
+import com.cinema.booking_app.entity.AccountEntity;
+import com.cinema.booking_app.entity.RoleEntity;
+import com.cinema.booking_app.repository.AccountRepository;
+import com.cinema.booking_app.repository.RefreshTokenRepository;
 import com.cinema.booking_app.security.SecurityUtils;
-import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +16,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -33,9 +37,11 @@ public class TokenProvider {
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
     private final RsaKeyProperties rsaKeyProperties;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final AccountRepository accountRepository;
 
     private static final String AUTHORITIES_KEY = "scope";
-    private static final String INVALID_JWT_TOKEN = "Invalid JWT Token";
+    private static final String INVALID_JWT_TOKEN = "Invalid JWT token.";
 
     public String createToken(Authentication authentication) {
         log.info("[TokenProvider:createToken] Token Creation Started for:{}", authentication.getName());
@@ -52,6 +58,25 @@ public class TokenProvider {
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public Jwt createRefreshToken(Authentication authentication) {
+        log.info("[TokenProvider:createRefreshToken] Token Creation Started for:{}", authentication.getName());
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("davIssuer")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plus(15, ChronoUnit.DAYS))
+                .subject(authentication.getName())
+                .claim("scope", "REFRESH_TOKEN")
+                .build();
+        
+        return jwtEncoder.encode(JwtEncoderParameters.from(claims));
+    }
+
+    public boolean isRefreshTokenValidInDatabase(Jwt jwt) {
+        return refreshTokenRepository.findByRefreshToken(jwt.getTokenValue())
+                .map(token -> !token.isRevoked())
+                .orElse(false);
     }
 
     public String resolveToken(final HttpServletRequest request) {
@@ -72,26 +97,69 @@ public class TokenProvider {
         }
     }
 
-    private boolean getIfTokenIsExpired(Jwt jwt) {
-        return Objects.requireNonNull(jwt.getExpiresAt()).isBefore(Instant.now());
+    public boolean isTokenValid(Jwt jwtToken, UserDetails userDetails) {
+        final String userName = getUserName(jwtToken);
+        boolean isTokenExpired = getIfTokenIsExpired(jwtToken);
+        boolean isTokenUserSameAsDatabase = userName.equals(userDetails.getUsername());
+        return !isTokenExpired && isTokenUserSameAsDatabase;
+
+    }
+
+    private boolean getIfTokenIsExpired(Jwt jwtToken) {
+        return Objects.requireNonNull(jwtToken.getExpiresAt()).isBefore(Instant.now());
     }
 
     public Authentication getAuthentication(final String token) {
         try {
             final var claims = JWTParser.parse(token).getJWTClaimsSet();
-
             Collection<? extends GrantedAuthority> authorities = Arrays
                     .stream(claims.getClaim(AUTHORITIES_KEY).toString().split(","))
                     .filter(auth -> !auth.trim().isEmpty())
                     .map("ROLE_"::concat)
                     .map(SimpleGrantedAuthority::new)
                     .toList();
-
             final var principal = new User(claims.getSubject(), "", authorities);
             return new UsernamePasswordAuthenticationToken(principal, token, authorities);
         } catch (ParseException e) {
             log.error(INVALID_JWT_TOKEN, e);
             throw new RuntimeException(INVALID_JWT_TOKEN);
         }
+    }
+
+    public Authentication getAuthentication(final AccountEntity account) {
+        // Extract user details from UserDetailsEntity
+        String username = account.getUsername();
+        String password = account.getPasswordHash();
+        final var authorities = account.getRoles()
+                .stream()
+                .map(RoleEntity::getName)
+                .map(Enum::name)
+                .map("ROLE_"::concat)
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+
+        return new UsernamePasswordAuthenticationToken(username, password, authorities);
+    }
+
+    public String getUserName(final Jwt jwt) {
+        return jwt.getSubject();
+    }
+
+    public UserDetails userDetails(final String username) {
+        return accountRepository
+                .findByUsername(username)
+                .map(this::createSpringSecurityUser)
+                .orElseThrow(() -> new UsernameNotFoundException("Account: %s does not exist".formatted(username)));
+    }
+
+    private User createSpringSecurityUser(AccountEntity account) {
+        final var grantedAuthorities = account
+                .getRoles()
+                .stream()
+                .map(RoleEntity::getName)
+                .map(Enum::name)
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+        return new User(account.getUsername(), account.getPasswordHash(), grantedAuthorities);
     }
 }
