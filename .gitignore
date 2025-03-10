@@ -32,4 +32,5 @@ build/
 ### VS Code ###
 .vscode/
 
-!**/src/main/resources/firebase/*.json
+# Ignore Firebase credentials
+src/main/resources/firebase/account-admin-sdk.json
