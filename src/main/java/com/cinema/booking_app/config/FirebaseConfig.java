@@ -1,4 +1,4 @@
-package com.cinema.authentication.config;
+package com.cinema.booking_app.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -12,7 +12,6 @@ import java.io.FileInputStream;
 
 @Configuration
 public class FirebaseConfig {
-
     @SneakyThrows
     @PostConstruct
     public void init() {

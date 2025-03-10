@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "devtuna-authentication",
+  "private_key_id": "c1aa38687f41433afb134c73b9e620815cce561a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDPWA25NXZCp+9X\ndTSfu0FaIOGzZAZhSNBbhkBSERlQu2V+uSwP0t7n4coh+WOy/wlw/O6+/mfui+B0\nL/e4Hhv8HEKTzaP/WoiNQ/O1I810oz7uiY04s9PQrUC/bqSjt1QJFxTVlnNkTUI1\njajmtuGXu80pGh8lC2tUAbWYKxaUFdhhc01yhLnspgpRa0wU7ROTSjRjgQGcZ00M\n5m4aAF/IsM5h6Tt8VGH6C39vUKDrNLh0ren8cFrzdKGne5kkkGJhw9a4nPPILsxs\nyNhvYc3z1NN+HT3fGiqXjrunQ3uJ5eA1tmbIWHJa4f77t3z0X1z5qP6LHGI94F/h\nJaC1v8G/AgMBAAECggEAGZNu/e2OTOKSL2ORvjJG+Wsc7BfmgZGNwfxparYZPVAg\nUOVefgUw4cGEQXSVy7qR25IXkQ+omlA+u5Y/JELyiMKjo7+1/wWX2nULVsi3yy9n\nz9y/wsLL2e3FEtf/DwLKJuTl+QK58SFmjVyP/QWKBkFwKSXDuboS3yXm1IJcIp/m\nWr8ftdfJ/0bprKkkpqyPWNWbw0Wro6e98HSmcLu3RraMroIt4Gl61rDUSdxb+Gcl\n2oUfjSxPGgTEDRTy+8V3/vDgK4peMrtzvq5ULdPGgvWxSrqoeNgkbZ96TsXXvDa6\nDD8RTGfxfHJLAg+hs2hQNW87tEdxwvqgnRDJCQ8NoQKBgQDrlQqgcZXSAaPl8cvX\nIHRyjqxEEj8Wj2yMlSktyOtQJQtU0kR2wbnynwWv3k5ky//EdyY8bWtLaPUUFf9s\nXGaROqJjMA6jWxFT18SWBXEW4YyZUkLKS/xccJZHvCGDUn0V9Tevonhfwgb0z5jC\nnLiAfbTjVK6bjM++sNKwxCQ3MwKBgQDhUHqVytxqzDLhQH/f3sW0/NwdYlADVFB0\n91cwsUh9IcB5hxDus4e2KJ5akJuza75Ri/B+vqbvrFLF4L+wHaa4kN9blGHss76k\nuOzckPTCAU1JO08DXGAj2hW3PFLI50ak6rQ/diUMQFIABwx+thV00BR/bIs5wgbD\nJWLUxyubRQKBgQChQIxclEMD04GXdLGdWCa8/zGlCoRKcfPQKo1cPIntet3NunuI\nekRIcVcYMWehkQ1KMnBmrlLh9D7E9+W1C25dfDAJCq0KXdx3clqqgaEOE2cEz4zO\nIcLkl2AWTAz4ca8TJ51tSB1zFkFisvKSS2ny8Ziufplh+bl9glVFD4zmhwKBgFNF\naBjGQZIi58cCDICTl6QdM8iUVhf06EtiQlIXoz/D4pvHhEWECmsTNfsoqLK15j/D\nJV3iXlYD7Q9+0bloK/7YZAQ3ob1WbOX6Bmg6FotA6exfxALs+AcoCZCP9dSUTTKU\nH4u4wVZ2yxeBg2etKd7jLEAvwIDXKaKjxZP4DDC1AoGAOiz9vcPGVKc8FFRdx40D\nVVvJHZTRpcUXb49Ma4hbyzq1F78zFX0YQUm7rCHQOFPp3biuvP8kmj05n+/81qoq\nIsQKaJI4ChCxSlZ7zhYy7KpIhY3BFmxUPC6MWjUu+JXluI6VWO4VQDjrcpvbrto9\nIc+HN+rnTIgJvbm2YWxxl6w=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@devtuna-authentication.iam.gserviceaccount.com",
+  "client_id": "108005888599056795481",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40devtuna-authentication.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

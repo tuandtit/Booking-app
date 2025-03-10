@@ -1,4 +1,4 @@
-package com.cinema.authentication.service.dto.request;
+package com.cinema.booking_app.service.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 

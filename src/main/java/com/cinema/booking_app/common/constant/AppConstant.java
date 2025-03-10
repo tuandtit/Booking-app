@@ -12,7 +12,7 @@ public final class AppConstant {
     public static final MessageCode FORBIDDEN = new MessageCode(HttpStatus.FORBIDDEN);
     public static final MessageCode UNAUTHORIZED = new MessageCode(HttpStatus.UNAUTHORIZED);
 
-    public static final String PASSWORD_DEFAULT = "dav@2024";
+    public static final String PASSWORD_DEFAULT = "tuna@2025";
 
     public static final String SYSTEM = "system";
 }

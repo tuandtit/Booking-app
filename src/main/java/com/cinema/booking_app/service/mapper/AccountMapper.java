@@ -6,6 +6,7 @@ import com.cinema.booking_app.service.dto.AccountDto;
 import com.cinema.booking_app.service.dto.request.SignUpRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 @Mapper(
         config = DefaultConfigMapper.class,
@@ -15,4 +16,17 @@ public interface AccountMapper extends EntityMapper<AccountDto, AccountEntity> {
     @Mapping(target = "avatar", ignore = true)
     AccountEntity toEntity(SignUpRequest request);
 
+    @Mapping(target = "username", source = "token.subject")
+    @Mapping(target = "tokenType", expression = "java(TokenType.Bearer.name())")
+    @Mapping(target = "token", source = "token.tokenValue")
+    @Mapping(target = "refreshToken", source = "refreshToken.tokenValue")
+    @Mapping(target = "tokenExpiry", source = "token.expiresAt")
+    @Mapping(target = "refreshTokenExpiry", source = "refreshToken.expiresAt")
+    AccountDto toDto(Jwt token, Jwt refreshToken);
+
+    @Mapping(target = "username", source = "token.subject")
+    @Mapping(target = "tokenType", expression = "java(TokenType.Bearer.name())")
+    @Mapping(target = "token", source = "token.tokenValue")
+    @Mapping(target = "tokenExpiry", source = "token.expiresAt")
+    AccountDto toDto(Jwt token);
 }

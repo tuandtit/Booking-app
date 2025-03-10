@@ -2,6 +2,7 @@ package com.cinema.booking_app.security.jwt;
 
 import com.cinema.booking_app.config.properties.RsaKeyProperties;
 import com.cinema.booking_app.entity.AccountEntity;
+import com.cinema.booking_app.entity.RefreshTokenEntity;
 import com.cinema.booking_app.entity.RoleEntity;
 import com.cinema.booking_app.repository.AccountRepository;
 import com.cinema.booking_app.repository.RefreshTokenRepository;
@@ -43,31 +44,31 @@ public class TokenProvider {
     private static final String AUTHORITIES_KEY = "scope";
     private static final String INVALID_JWT_TOKEN = "Invalid JWT token.";
 
-    public String createToken(Authentication authentication) {
+    public Jwt createToken(Authentication authentication) {
         log.info("[TokenProvider:createToken] Token Creation Started for:{}", authentication.getName());
 
         final var authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
         final var now = Instant.now();
 
         final var claims = JwtClaimsSet.builder()
-                .issuer("davIssuer")
+                .issuer("devtuna.com")
                 .issuedAt(now)
                 .expiresAt(now.plus(rsaKeyProperties.expired(), ChronoUnit.MINUTES))
                 .subject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
                 .build();
 
-        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        return jwtEncoder.encode(JwtEncoderParameters.from(claims));
     }
 
     public Jwt createRefreshToken(Authentication authentication) {
         log.info("[TokenProvider:createRefreshToken] Token Creation Started for:{}", authentication.getName());
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("davIssuer")
+                .issuer("devtuna.com")
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plus(15, ChronoUnit.DAYS))
                 .subject(authentication.getName())
-                .claim("scope", "REFRESH_TOKEN")
+                .claim(AUTHORITIES_KEY, "REFRESH_TOKEN")
                 .build();
         
         return jwtEncoder.encode(JwtEncoderParameters.from(claims));
