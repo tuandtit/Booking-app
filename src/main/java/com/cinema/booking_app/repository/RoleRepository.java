@@ -1,7 +1,7 @@
 package com.cinema.booking_app.repository;
 
 import com.cinema.booking_app.entity.RoleEntity;
-import com.cinema.booking_app.entity.enums.ERole;
+import com.cinema.booking_app.common.enums.ERole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

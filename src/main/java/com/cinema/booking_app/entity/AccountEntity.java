@@ -1,24 +1,22 @@
 package com.cinema.booking_app.entity;
 
-import com.cinema.booking_app.entity.enums.AuthProvider;
+import com.cinema.booking_app.common.enums.AccountStatus;
+import com.cinema.booking_app.common.enums.AuthProvider;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
@@ -27,6 +25,7 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
+@Builder
 @Table(
         name = "accounts",
         indexes = {
@@ -36,11 +35,10 @@ import java.util.List;
                 )
         }
 )
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AccountEntity extends AbstractAuditingEntity<Long> {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
 
     @Column(name = "username", unique = true, nullable = false, updatable = false)
     String username;
@@ -50,6 +48,14 @@ public class AccountEntity extends AbstractAuditingEntity<Long> {
 
     @Column(name = "avatar", columnDefinition = "text")
     String avatar;
+
+    @Column(name = "display_name", nullable = false)
+    String displayName;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "status")
+    private AccountStatus status;
 
     @Column(name = "auth_provider")
     @Enumerated(EnumType.STRING)

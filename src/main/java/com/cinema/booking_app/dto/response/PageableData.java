@@ -1,4 +1,4 @@
-package com.cinema.booking_app.service.dto.response;
+package com.cinema.booking_app.dto.response;
 
 import lombok.AccessLevel;
 import lombok.Getter;

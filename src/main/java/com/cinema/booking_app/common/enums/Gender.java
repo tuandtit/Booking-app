@@ -1,4 +1,4 @@
-package vn.tayjava.util;
+package com.cinema.booking_app.common.enums;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

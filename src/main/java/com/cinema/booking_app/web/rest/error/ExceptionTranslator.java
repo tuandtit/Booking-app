@@ -1,6 +1,8 @@
 package com.cinema.booking_app.web.rest.error;
 
 import com.cinema.booking_app.common.constant.AppConstant;
+import com.cinema.booking_app.config.languages.Translator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -14,7 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class ExceptionTranslator extends ResponseEntityExceptionHandler {
+
+    private final Translator translator;
 
     private ResponseEntity<ErrorResponse> badRequest(ErrorResponse result) {
         return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
@@ -48,7 +53,7 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
         Map<String, Object> map = new HashMap<>();
-        map.put("service", ex.getMessage());
+        map.put("service", translator.toLocale("error.access.denied"));
         return forbidden(
                 new ErrorResponse(AppConstant.FORBIDDEN.getCode(), AppConstant.SERVICE_ERROR.getMessage(), map)
         );
@@ -58,7 +63,7 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     ResponseEntity<ErrorResponse> handleAccessDeniedException(AuthenticationException ex) {
         Map<String, Object> map = new HashMap<>();
-        map.put("service", ex.getMessage());
+        map.put("service", translator.toLocale("error.login.bad_credentials"));
         return unauthorized(
                 new ErrorResponse(AppConstant.UNAUTHORIZED.getCode(), AppConstant.UNAUTHORIZED.getMessage(), map)
         );

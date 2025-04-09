@@ -1,4 +1,4 @@
-package com.cinema.booking_app.service.dto;
+package com.cinema.booking_app.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
@@ -12,6 +12,7 @@ import java.time.Instant;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AccountDto {
     String username;
+    String displayName;
     String avatar;
     String token;
     Instant tokenExpiry;

@@ -19,9 +19,8 @@ import java.util.Locale;
 public class WebLocaleConfig implements WebMvcConfigurer {
 
     private static final List<Locale> SUPPORTED_LOCALES = List.of(
-            new Locale("en"),
             new Locale("vi"),
-            new Locale("fr")
+            new Locale("en")
     );
 
     @Bean
@@ -31,11 +30,11 @@ public class WebLocaleConfig implements WebMvcConfigurer {
             public Locale resolveLocale(HttpServletRequest request) {
                 String headerLang = request.getHeader("Accept-Language");
                 if (!StringUtils.hasText(headerLang)) {
-                    return Locale.ENGLISH;
+                    return new Locale("vi"); // Mặc định là tiếng Việt
                 }
                 List<Locale.LanguageRange> ranges = Locale.LanguageRange.parse(headerLang);
                 Locale matchedLocale = Locale.lookup(ranges, SUPPORTED_LOCALES);
-                return matchedLocale != null ? matchedLocale : Locale.ENGLISH;
+                return matchedLocale != null ? matchedLocale : new Locale("vi");
             }
         };
     }
@@ -43,7 +42,7 @@ public class WebLocaleConfig implements WebMvcConfigurer {
     @Bean
     public MessageSource messageSource() {
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        source.setBasename("i18n/messages"); // e.g. i18n/messages_en.properties
+        source.setBasename("i18n/messages"); // ví dụ: i18n/messages_vi.properties
         source.setDefaultEncoding("UTF-8");
         source.setUseCodeAsDefaultMessage(true);
         return source;

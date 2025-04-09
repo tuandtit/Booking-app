@@ -1,9 +1,7 @@
 package com.cinema.booking_app.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
@@ -25,6 +23,10 @@ public abstract class AbstractAuditingEntity<ID> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
     @CreatedBy
     @Column(name = "created_by", nullable = false, length = 50, updatable = false)
     private String createdBy;
@@ -40,6 +42,4 @@ public abstract class AbstractAuditingEntity<ID> implements Serializable {
     @LastModifiedBy
     @Column(name = "last_modified_by", length = 50)
     private String lastModifiedBy;
-
-    public abstract ID getId();
 }

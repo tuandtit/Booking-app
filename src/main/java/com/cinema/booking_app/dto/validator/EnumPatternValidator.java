@@ -1,4 +1,4 @@
-package vn.tayjava.dto.validator;
+package com.cinema.booking_app.dto.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

@@ -1,4 +1,4 @@
-package com.cinema.booking_app.config;
+package com.cinema.booking_app.config.languages;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;

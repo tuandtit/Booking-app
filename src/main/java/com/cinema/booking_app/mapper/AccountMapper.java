@@ -1,9 +1,9 @@
-package com.cinema.booking_app.service.mapper;
+package com.cinema.booking_app.mapper;
 
 import com.cinema.booking_app.entity.AccountEntity;
-import com.cinema.booking_app.entity.enums.TokenType;
-import com.cinema.booking_app.service.dto.AccountDto;
-import com.cinema.booking_app.service.dto.request.SignUpRequest;
+import com.cinema.booking_app.common.enums.TokenType;
+import com.cinema.booking_app.dto.AccountDto;
+import com.cinema.booking_app.dto.request.SignUpRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.security.oauth2.jwt.Jwt;

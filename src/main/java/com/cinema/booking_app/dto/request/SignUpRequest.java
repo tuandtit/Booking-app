@@ -1,4 +1,4 @@
-package com.cinema.booking_app.service.dto.request;
+package com.cinema.booking_app.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,6 +8,8 @@ public record SignUpRequest(
         String username,
         @NotBlank
         String password,
+        @NotBlank
+        String displayName,
         MultipartFile avatar
 ) {
 }

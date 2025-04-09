@@ -1,9 +1,10 @@
-package com.project.shopapp.configurations.init;
+package com.cinema.booking_app.config.init;
 
-import com.project.shopapp.common.enums.ERole;
-import com.project.shopapp.models.Account;
-import com.project.shopapp.models.Role;
-import com.project.shopapp.repositories.AccountRepository;
+import com.cinema.booking_app.common.enums.AccountStatus;
+import com.cinema.booking_app.entity.AccountEntity;
+import com.cinema.booking_app.entity.RoleEntity;
+import com.cinema.booking_app.common.enums.ERole;
+import com.cinema.booking_app.repository.AccountRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,16 +27,20 @@ public class AccountInit implements CommandLineRunner {
             return;
         }
 
+
         String adminUsername = "admin";
         String adminPassword = "admin";
-        final var account = Account.builder()
+        String displayName = "owner";
+        final var account = AccountEntity.builder()
                 .username(adminUsername)
                 .passwordHash(this.passwordEncoder.encode(adminPassword))
+                .displayName(displayName)
+                .status(AccountStatus.ACTIVE)
                 .roles(List.of(
-                        Role.builder()
+                        RoleEntity.builder()
                                 .name(ERole.ADMIN)
                                 .build(),
-                        Role.builder()
+                        RoleEntity.builder()
                                 .name(ERole.USER)
                                 .build()
                 ))

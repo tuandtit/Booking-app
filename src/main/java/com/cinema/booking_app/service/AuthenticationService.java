@@ -1,9 +1,9 @@
 package com.cinema.booking_app.service;
 
-import com.cinema.booking_app.service.dto.AccountDto;
-import com.cinema.booking_app.service.dto.request.SignInGoogleRequest;
-import com.cinema.booking_app.service.dto.request.SignInRequest;
-import com.cinema.booking_app.service.dto.request.SignUpRequest;
+import com.cinema.booking_app.dto.AccountDto;
+import com.cinema.booking_app.dto.request.SignInGoogleRequest;
+import com.cinema.booking_app.dto.request.SignInRequest;
+import com.cinema.booking_app.dto.request.SignUpRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

@@ -1,11 +1,13 @@
+server:
+  port: 8080
 spring:
   application:
     name: booking-application
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://${POSTGRESQL_HOST:localhost}:${POSTGRESQL_PORT:5432}/${POSTGRESQL_DATABASE:booking}
-    username: ${POSTGRESQL_USER:postgres}
-    password: ${POSTGRESQL_PASS:tuan6326}
+    username: ${POSTGRESQL_USER:root}
+    password: ${POSTGRESQL_PASS:root}
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -32,8 +34,6 @@ spring:
       hibernate.order_updates: true
       hibernate.query.fail_on_pagination_over_collection_fetch: true
       hibernate.query.in_clause_parameter_padding: true
-server:
-  port: 8080
 jwt:
   expired: 15
   rsa-private-key: classpath:certs/privateKey.pem
@@ -43,3 +43,14 @@ logging:
     ROOT: INFO
     org.hibernate.SQL: INFO
     com.cinema.authentication: debug
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+openapi:
+  service:
+    api-docs: api-service
+    title: ${API_TITLE:DUMMY-API-TITLE}
+    server: ${API_URL:http://localhost:8080}
+    version: 1.0.0

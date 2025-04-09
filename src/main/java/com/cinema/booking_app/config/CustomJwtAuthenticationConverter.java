@@ -1,4 +1,4 @@
-package com.project.shopapp.configurations;
+package com.cinema.booking_app.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;

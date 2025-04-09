@@ -43,6 +43,7 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "scope";
     private static final String INVALID_JWT_TOKEN = "Invalid JWT token.";
+    private static final String PREFIX_AUTHORIZE = "ROLE_";
 
     public Jwt createToken(Authentication authentication) {
         log.info("[TokenProvider:createToken] Token Creation Started for:{}", authentication.getName());
@@ -70,7 +71,7 @@ public class TokenProvider {
                 .subject(authentication.getName())
                 .claim(AUTHORITIES_KEY, "REFRESH_TOKEN")
                 .build();
-        
+
         return jwtEncoder.encode(JwtEncoderParameters.from(claims));
     }
 
@@ -116,7 +117,7 @@ public class TokenProvider {
             Collection<? extends GrantedAuthority> authorities = Arrays
                     .stream(claims.getClaim(AUTHORITIES_KEY).toString().split(","))
                     .filter(auth -> !auth.trim().isEmpty())
-                    .map("ROLE_"::concat)
+                    .map(s -> s.startsWith(PREFIX_AUTHORIZE) ? s : PREFIX_AUTHORIZE + s)
                     .map(SimpleGrantedAuthority::new)
                     .toList();
             final var principal = new User(claims.getSubject(), "", authorities);
@@ -135,7 +136,7 @@ public class TokenProvider {
                 .stream()
                 .map(RoleEntity::getName)
                 .map(Enum::name)
-                .map("ROLE_"::concat)
+                .map(s -> s.startsWith(PREFIX_AUTHORIZE) ? s : PREFIX_AUTHORIZE + s)
                 .map(SimpleGrantedAuthority::new)
                 .toList();
 

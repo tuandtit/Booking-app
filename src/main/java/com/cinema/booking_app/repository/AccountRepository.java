@@ -1,7 +1,7 @@
 package com.cinema.booking_app.repository;
 
 import com.cinema.booking_app.entity.AccountEntity;
-import com.cinema.booking_app.entity.enums.AuthProvider;
+import com.cinema.booking_app.common.enums.AuthProvider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

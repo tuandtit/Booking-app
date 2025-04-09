@@ -1,4 +1,4 @@
-package com.cinema.booking_app.entity.enums;
+package com.cinema.booking_app.common.enums;
 
 public enum ERole {
     USER, ADMIN

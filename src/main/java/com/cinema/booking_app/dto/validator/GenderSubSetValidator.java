@@ -1,8 +1,8 @@
-package vn.tayjava.dto.validator;
+package com.cinema.booking_app.dto.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import vn.tayjava.util.Gender;
+import com.cinema.booking_app.common.enums.Gender;
 
 import java.util.Arrays;
 

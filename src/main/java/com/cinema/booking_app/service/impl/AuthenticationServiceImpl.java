@@ -1,20 +1,22 @@
 package com.cinema.booking_app.service.impl;
 
+import com.cinema.booking_app.common.enums.AccountStatus;
+import com.cinema.booking_app.config.languages.Translator;
 import com.cinema.booking_app.entity.AccountEntity;
 import com.cinema.booking_app.entity.RefreshTokenEntity;
 import com.cinema.booking_app.entity.RoleEntity;
-import com.cinema.booking_app.entity.enums.AuthProvider;
-import com.cinema.booking_app.entity.enums.ERole;
+import com.cinema.booking_app.common.enums.AuthProvider;
+import com.cinema.booking_app.common.enums.ERole;
 import com.cinema.booking_app.repository.AccountRepository;
 import com.cinema.booking_app.repository.RefreshTokenRepository;
 import com.cinema.booking_app.repository.RoleRepository;
 import com.cinema.booking_app.security.jwt.TokenProvider;
 import com.cinema.booking_app.service.AuthenticationService;
-import com.cinema.booking_app.service.dto.AccountDto;
-import com.cinema.booking_app.service.dto.request.SignInGoogleRequest;
-import com.cinema.booking_app.service.dto.request.SignInRequest;
-import com.cinema.booking_app.service.dto.request.SignUpRequest;
-import com.cinema.booking_app.service.mapper.AccountMapper;
+import com.cinema.booking_app.dto.AccountDto;
+import com.cinema.booking_app.dto.request.SignInGoogleRequest;
+import com.cinema.booking_app.dto.request.SignInRequest;
+import com.cinema.booking_app.dto.request.SignUpRequest;
+import com.cinema.booking_app.mapper.AccountMapper;
 import com.cinema.booking_app.web.rest.error.BusinessException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -49,6 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     PasswordEncoder passwordEncoder;
     AuthenticationManagerBuilder authenticationManagerBuilder;
     TokenProvider tokenProvider;
+    Translator translator;
 
     //Repository
     AccountRepository accountRepository;
@@ -61,12 +64,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AccountDto signUp(SignUpRequest request) {
         if(accountRepository.existsByUsername(request.username())) {
-            throw new BusinessException(String.valueOf(HttpStatus.BAD_REQUEST.value()), "Username is already in use");
+            throw new BusinessException(String.valueOf(HttpStatus.BAD_REQUEST.value()), translator.toLocale("error.username.exists"));
         }
         final var entity = accountMapper.toEntity(request);
         RoleEntity role = roleRepository.findByName(ERole.USER).orElse(new RoleEntity(ERole.USER));
         entity.setPasswordHash(passwordEncoder.encode(request.password()));
         entity.addRole(role);
+        entity.setStatus(AccountStatus.ACTIVE);
         return accountMapper.toDto(accountRepository.save(entity));
     }
 
@@ -89,6 +93,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "ACCOUNT NOT FOUND");
                 });
 
+        if (account.getStatus().equals(AccountStatus.INACTIVE)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, translator.toLocale("error.account.locked"));
+        }
         updateRevokedRefreshToken(account);
 
         //Let's save the refreshToken as well

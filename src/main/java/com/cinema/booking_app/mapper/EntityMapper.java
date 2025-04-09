@@ -1,4 +1,4 @@
-package com.cinema.booking_app.service.mapper;
+package com.cinema.booking_app.mapper;
 
 import org.mapstruct.*;
 
